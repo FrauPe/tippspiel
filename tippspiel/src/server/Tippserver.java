@@ -47,7 +47,7 @@ public class Tippserver extends Server {
 		switch(words.size()) {
 		case 4:
 			if(words.get(0).equals("TIPP"))
-				return user.setBet(words.get(1), words.get(2), words.get(3))
+				return user.setBet(words.get(1), words.get(2), words.get(3));
 			break;
 		case 2:
 			if(words.get(0).equals("SPIEL"))
@@ -105,6 +105,11 @@ public class Tippserver extends Server {
 		NetInfo(String ip, int port) {
 			this.ip = ip;
 			this.port = port;
+		}
+
+		@Override
+		public int hashCode() {
+			return ip.hashCode() + Integer.hashCode(port);;
 		}
 
 	}
