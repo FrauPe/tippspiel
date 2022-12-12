@@ -1,3 +1,4 @@
 *.class
 *.jar
 Session.vim
+/build.sh
