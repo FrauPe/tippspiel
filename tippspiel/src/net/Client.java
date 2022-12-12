@@ -13,7 +13,6 @@ public abstract class Client {
 		} catch(IOException e) {} // exit
 	});
 
-
 	public Client(String ip, int port) {
 		try {
 			connection = new Connection(new Socket(ip, port));
