@@ -1,7 +1,6 @@
 package server;
 
 import abiturklassen.netzklassen.Server;
-import server.User.Bet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,12 +12,19 @@ public class Tippserver extends Server {
 	private final String GENERAL_ERROR = "-ERR";
 	private final String NOT_SIGNED_IN = "-ERR Du bist nicht angemeldet.";
 
-	// TODO alle User hinzufügen (unique names)
-	private final User[] users = {};
-	private HashMap<NetInfo, User> activeUsers = new HashMap<>();
+	// TODO Daten einfügen
+	private final User[] users = {
+		new User("Anja.Schmitz", "7j#5g!"),
+	};
+
+	// TODO Daten einfügen
+	private final Result[] games = new Result[32];
+
+	private final HashMap<NetInfo, User> activeUsers = new HashMap<>();
 
 	public Tippserver() {
 		super(2000);
+		games[31] = new Result(0, 0);
 	}
 
 	@Override
@@ -80,14 +86,17 @@ public class Tippserver extends Server {
 		return "+OK " + name + " ist angemeldet.";
 	}
 
-	private String points(Set<Entry<Integer, Bet>> bets) {
+	private String points(Set<Entry<Integer, Result>> bets) {
 		int points = 0;
-		for(Entry<Integer, Bet> e : bets) {
-			int game = e.getKey();
-			int goals1 = e.getValue().goals1;
-			int goals2 = e.getValue().goals2;
-			// TODO update points
-			points++;
+		for(Entry<Integer, Result> e : bets) {
+			Result actual = games[e.getKey()];
+			Result guessed = e.getValue();
+			if(actual.goals1 == guessed.goals1)
+				points += 5;
+			if(actual.goals2 == guessed.goals2)
+				points += 5;
+			if(actual.goals1 - actual.goals2 == guessed.goals1 - guessed.goals2)
+				points += 10;
 		}
 		return "+OK Du hast bis jetzt " + points + " Punkte im Tippspiel erreicht.";
 	}
@@ -97,7 +106,7 @@ public class Tippserver extends Server {
 		return "+OK Du wirst abgemeldet.";
 	}
 
-	private final class NetInfo {
+	private static final class NetInfo {
 
 		final String ip;
 		final int port;
@@ -109,7 +118,7 @@ public class Tippserver extends Server {
 
 		@Override
 		public int hashCode() {
-			return ip.hashCode() + Integer.hashCode(port);;
+			return ip.hashCode() + Integer.hashCode(port);
 		}
 
 	}
